@@ -5,12 +5,14 @@ import Signup from "./scenes/Signup";
 import Welcome from "./scenes/Welcome";
 
 function App() {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState('');
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/" element={user ? <Welcome /> : <Login />} />
+      <Route path="/login" element={<Login setUser={setUser} />} />
+      <Route path="/signup" element={<Signup setUser={setUser} />} />
+      <Route path="/" element={user 
+        ? <Welcome user={user}/> 
+        : <Login setUser={setUser}/>} />
     </Routes>
   );
 }
