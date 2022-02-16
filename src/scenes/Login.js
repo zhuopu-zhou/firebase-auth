@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   getAuth,
@@ -8,12 +8,22 @@ import {
 } from "firebase/auth";
 import { app } from "../ConnectAuth";
 
-export default function Login({ setUser }) {
+export default function Login({ setUser, user }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
   const provider = new GoogleAuthProvider();
   const auth = getAuth(app);
+
+  useEffect(() => {
+    const localUser = localStorage.getItem("displayName");
+
+    console.log('localUser from LS',localUser);
+
+    if(localUser)setUser(localUser)
+  }, []);
+
   const handleFormSubmit = (event) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
@@ -28,11 +38,20 @@ export default function Login({ setUser }) {
     signInWithPopup(auth, provider)
       .then((result) => {
         setUser(result.user);
-        //navigate to home page
+        console.log(result.user)
+        localStorage.setItem("displayName", result.user.displayName);
+        localStorage.setItem("img", result.user.photoURL);
+        localStorage.setItem("email", result.user.email);
+        
+
+
+        console.log(result.user.displayName);
         navigate("/");
       })
       .catch(alert);
   };
+
+  console.log(user);
 
   return (
     <>
@@ -71,4 +90,3 @@ export default function Login({ setUser }) {
     </>
   );
 }
-
